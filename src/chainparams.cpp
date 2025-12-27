@@ -87,8 +87,9 @@ public:
         consensus.BIP66Height = 363725;
         // 000000000000000004a1b34462cb8aeebd5799177f7a29cf28f2d1961716b5b5
         consensus.CSVHeight = 419328;
+        // BitcoinCard: Easier initial difficulty (0x1e00ffff = 256x easier than Bitcoin's difficulty 1)
         consensus.powLimit = uint256S(
-            "00000000ffffffffffffffffffffffffffffffffffffffffffffffffffffffff");
+            "000000ffffffffffffffffffffffffffffffffffffffffffffffffffffffffff");
         // two weeks
         consensus.nPowTargetTimespan = 14 * 24 * 60 * 60;
         consensus.nPowTargetSpacing = 10 * 60;
@@ -134,7 +135,7 @@ public:
         // BitcoinCard: Anchor params for new chain (genesis block)
         consensus.asertAnchorParams = Consensus::Params::ASERTAnchor{
             0,            // anchor block height (genesis)
-            0x1d00ffff,   // anchor block nBits (difficulty 1)
+            0x1e00ffff,   // anchor block nBits (256x easier than difficulty 1)
             0,            // anchor block previous block timestamp
         };
 
@@ -165,16 +166,14 @@ public:
         m_assumed_chain_state_size = 1;     // New chain starts small
 
         // BitcoinCard genesis block - timestamp: Dec 27, 2025
-        // nTime will be set to current timestamp when mining
-        // nNonce will be found by mining tool
-        // For now, use placeholder values that will be updated after mining
-        genesis = CreateGenesisBlock(1735315200, 0, 0x1d00ffff, 1,
+        // Mined with nonce=548158, nBits=0x1e00ffff (256x easier than difficulty 1)
+        genesis = CreateGenesisBlock(1735315200, 548158, 0x1e00ffff, 1,
                                      50 * COIN);
         consensus.hashGenesisBlock = genesis.GetHash();
-        // TODO: Update these assertions after mining the genesis block
-        // For now, comment out to allow compilation
-        // assert(consensus.hashGenesisBlock == uint256S("..."));
-        // assert(genesis.hashMerkleRoot == uint256S("..."));
+        assert(consensus.hashGenesisBlock ==
+               uint256S("0x000000ffab1f5e1a4449198369b7a927929f836e79c981141c7506a975c7fbcf"));
+        assert(genesis.hashMerkleRoot ==
+               uint256S("0xb2025da4eb73530a5ad6290ee74f89834850bcb6cf4bc674566801568745acae"));
 
         // BitcoinCard: No seed nodes yet for new network
         vSeeds.clear();
