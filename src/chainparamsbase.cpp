@@ -43,32 +43,33 @@ const CBaseChainParams &BaseParams() {
 }
 
 /**
- * Port numbers for incoming Tor connections (8334, 18334, 28334, 38334, 18445) have been chosen arbitrarily to keep
+ * BitcoinCard port numbers - different from BCH to avoid conflicts
+ * Port numbers for incoming Tor connections have been chosen arbitrarily to keep
  * ranges of used ports tight.
  */
 std::unique_ptr<CBaseChainParams> CreateBaseChainParams(const std::string &chain) {
     if (chain == CBaseChainParams::MAIN) {
-        return std::make_unique<CBaseChainParams>("", 8332, 8334);
+        return std::make_unique<CBaseChainParams>("", 9332, 9334);
     }
 
     if (chain == CBaseChainParams::TESTNET) {
-        return std::make_unique<CBaseChainParams>("testnet3", 18332, 18334);
+        return std::make_unique<CBaseChainParams>("testnet3", 19332, 19334);
     }
 
     if (chain == CBaseChainParams::TESTNET4) {
-        return std::make_unique<CBaseChainParams>("testnet4", 28332, 28334);
+        return std::make_unique<CBaseChainParams>("testnet4", 29332, 29334);
     }
 
     if (chain == CBaseChainParams::SCALENET) {
-        return std::make_unique<CBaseChainParams>("scalenet", 38332, 38334);
+        return std::make_unique<CBaseChainParams>("scalenet", 39332, 39334);
     }
 
     if (chain == CBaseChainParams::CHIPNET) {
-        return std::make_unique<CBaseChainParams>("chipnet", 48332, 48334);
+        return std::make_unique<CBaseChainParams>("chipnet", 49332, 49334);
     }
 
     if (chain == CBaseChainParams::REGTEST) {
-        return std::make_unique<CBaseChainParams>("regtest", 18443, 18445);
+        return std::make_unique<CBaseChainParams>("regtest", 19443, 19445);
     }
 
     throw std::runtime_error(
