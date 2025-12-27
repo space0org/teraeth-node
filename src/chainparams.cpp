@@ -322,15 +322,14 @@ public:
         m_assumed_blockchain_size = 60;     // 43G
         m_assumed_chain_state_size = 2;     // 1.3G
 
+        // BitcoinCard testnet3 genesis block - same as mainnet
         genesis =
-            CreateGenesisBlock(1296688602, 414098458, 0x1d00ffff, 1, 50 * COIN);
+            CreateGenesisBlock(1735315200, 548158, 0x1e00ffff, 1, 50 * COIN);
         consensus.hashGenesisBlock = genesis.GetHash();
         assert(consensus.hashGenesisBlock ==
-               uint256S("000000000933ea01ad0ee984209779baaec3ced90fa3f408719526"
-                        "f8d77f4943"));
+               uint256S("0x000000ffab1f5e1a4449198369b7a927929f836e79c981141c7506a975c7fbcf"));
         assert(genesis.hashMerkleRoot ==
-               uint256S("4a5e1e4baab89f3a32518a88c31bc87f618f76673e2cc77ab2127b"
-                        "7afdeda33b"));
+               uint256S("0xb2025da4eb73530a5ad6290ee74f89834850bcb6cf4bc674566801568745acae"));
 
         vFixedSeeds.clear();
         vSeeds.clear();
@@ -536,15 +535,17 @@ public:
         m_assumed_blockchain_size = 1;      // 82M
         m_assumed_chain_state_size = 1;     // 12M
 
-        genesis = CreateGenesisBlock(1597811185, 114152193, 0x1d00ffff, 1, 50 * COIN);
+        // BitcoinCard testnet4 genesis block - same as mainnet
+        genesis = CreateGenesisBlock(1735315200, 548158, 0x1e00ffff, 1, 50 * COIN);
         consensus.hashGenesisBlock = genesis.GetHash();
         assert(consensus.hashGenesisBlock ==
-            BlockHash::fromHex("000000001dd410c49a788668ce26751718cc797474d3152a5fc073dd44fd9f7b"));
+               uint256S("0x000000ffab1f5e1a4449198369b7a927929f836e79c981141c7506a975c7fbcf"));
+        assert(genesis.hashMerkleRoot ==
+               uint256S("0xb2025da4eb73530a5ad6290ee74f89834850bcb6cf4bc674566801568745acae"));
 
+        // BitcoinCard: No seed nodes yet for new network
         vFixedSeeds.clear();
         vSeeds.clear();
-        // nodes with support for servicebits filtering should be at the top
-        vSeeds.emplace_back("testnet4-seed-bch.toom.im");
         // Loping.net
         vSeeds.emplace_back("seed.tbch4.loping.net");
         // Flowee
@@ -717,18 +718,17 @@ public:
         m_assumed_blockchain_size = 250;    // 153G
         m_assumed_chain_state_size = 50;    // 16G
 
-        genesis = CreateGenesisBlock(1598282438, -1567304284, 0x1d00ffff, 1, 50 * COIN);
+        // BitcoinCard scalenet genesis block - same as mainnet
+        genesis = CreateGenesisBlock(1735315200, 548158, 0x1e00ffff, 1, 50 * COIN);
         consensus.hashGenesisBlock = genesis.GetHash();
-
         assert(consensus.hashGenesisBlock ==
-            uint256S("00000000e6453dc2dfe1ffa19023f86002eb11dbb8e87d0291a4599f0430be52"));
+               uint256S("0x000000ffab1f5e1a4449198369b7a927929f836e79c981141c7506a975c7fbcf"));
         assert(genesis.hashMerkleRoot ==
-            uint256S("4a5e1e4baab89f3a32518a88c31bc87f618f76673e2cc77ab2127b7afdeda33b"));
+               uint256S("0xb2025da4eb73530a5ad6290ee74f89834850bcb6cf4bc674566801568745acae"));
 
+        // BitcoinCard: No seed nodes yet for new network
         vFixedSeeds.clear();
         vSeeds.clear();
-        // nodes with support for servicebits filtering should be at the top
-        vSeeds.emplace_back("scalenet-seed-bch.toom.im");
         // Loping.net
         vSeeds.emplace_back("seed.sbch.loping.net");
 
@@ -880,15 +880,17 @@ public:
         m_assumed_blockchain_size = 1;      // 242M
         m_assumed_chain_state_size = 1;     // 15M
 
-        genesis = CreateGenesisBlock(1597811185, 114152193, 0x1d00ffff, 1, 50 * COIN);
+        // BitcoinCard chipnet genesis block - same as mainnet
+        genesis = CreateGenesisBlock(1735315200, 548158, 0x1e00ffff, 1, 50 * COIN);
         consensus.hashGenesisBlock = genesis.GetHash();
         assert(consensus.hashGenesisBlock ==
-            BlockHash::fromHex("000000001dd410c49a788668ce26751718cc797474d3152a5fc073dd44fd9f7b"));
+               uint256S("0x000000ffab1f5e1a4449198369b7a927929f836e79c981141c7506a975c7fbcf"));
+        assert(genesis.hashMerkleRoot ==
+               uint256S("0xb2025da4eb73530a5ad6290ee74f89834850bcb6cf4bc674566801568745acae"));
 
+        // BitcoinCard: No seed nodes yet for new network
         vFixedSeeds.clear();
         vSeeds.clear();
-        // Jason Dreyzehner
-        vSeeds.emplace_back("chipnet.bitjson.com");
 
         base58Prefixes[PUBKEY_ADDRESS] = std::vector<uint8_t>(1, 111);
         base58Prefixes[SCRIPT_ADDRESS] = std::vector<uint8_t>(1, 196);
