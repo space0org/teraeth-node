@@ -1050,12 +1050,12 @@ public:
 
         // BitcoinCard regtest genesis block
         // Using easy difficulty (0x207fffff) for regtest
-        genesis = CreateGenesisBlock(1735315200, 0, 0x207fffff, 1, 50 * COIN);
+        genesis = CreateGenesisBlock(1735315200, 3, 0x207fffff, 1, 50 * COIN);
         consensus.hashGenesisBlock = genesis.GetHash();
-        // TODO: Update these assertions after computing the correct hash
-        // For regtest with 0x207fffff difficulty, nonce=0 should work
-        // assert(consensus.hashGenesisBlock == uint256S("..."));
-        // assert(genesis.hashMerkleRoot == uint256S("..."));
+        assert(consensus.hashGenesisBlock ==
+               uint256S("0x484bcd421341d452ce67d42d6c8788605b47ed26b74f54db4b849ba5acff7bf9"));
+        assert(genesis.hashMerkleRoot ==
+               uint256S("0xb2025da4eb73530a5ad6290ee74f89834850bcb6cf4bc674566801568745acae"));
 
         //! Regtest mode doesn't have any fixed seeds.
         vFixedSeeds.clear();
