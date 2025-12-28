@@ -175,8 +175,12 @@ public:
         assert(genesis.hashMerkleRoot ==
                uint256S("0xb2025da4eb73530a5ad6290ee74f89834850bcb6cf4bc674566801568745acae"));
 
-        // BitcoinCard: No seed nodes yet for new network
+        // BitcoinCard DNS seed nodes
+        // To add your own seed node, run a BitcoinCard node with -listen=1
+        // and add your domain/IP here, or use the -seednode= command line option
         vSeeds.clear();
+        // Example: vSeeds.emplace_back("seed1.bitcoincard.network");
+        // Example: vSeeds.emplace_back("seed2.bitcoincard.network");
 
         // BitcoinCard address prefixes (same as BCH for compatibility)
         base58Prefixes[PUBKEY_ADDRESS] = std::vector<uint8_t>(1, 0);
