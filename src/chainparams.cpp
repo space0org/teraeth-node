@@ -190,8 +190,9 @@ public:
         base58Prefixes[EXT_SECRET_KEY] = {0x04, 0x88, 0xAD, 0xE4};
         cashaddrPrefix = "bitcoincard";
 
-        // BitcoinCard: No fixed seeds yet for new network
-        vFixedSeeds.clear();
+        // BitcoinCard: Fixed seed nodes for automatic peer discovery
+        vFixedSeeds.assign(std::begin(pnSeed6_bitcoincard_main),
+                           std::end(pnSeed6_bitcoincard_main));
 
         fDefaultConsistencyChecks = false;
         fRequireStandard = true;
