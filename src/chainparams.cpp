@@ -87,9 +87,10 @@ public:
         consensus.BIP66Height = 363725;
         // 000000000000000004a1b34462cb8aeebd5799177f7a29cf28f2d1961716b5b5
         consensus.CSVHeight = 419328;
-        // BitcoinCard: Easier initial difficulty (0x1e00ffff = 256x easier than Bitcoin's difficulty 1)
+        // BitcoinCard: Very easy initial difficulty (0x1f00ffff = 65536x easier than Bitcoin's difficulty 1)
+        // This allows CPU mining to find blocks in seconds
         consensus.powLimit = uint256S(
-            "000000ffffffffffffffffffffffffffffffffffffffffffffffffffffffffff");
+            "0000ffffffffffffffffffffffffffffffffffffffffffffffffffffffffffff");
         // two weeks
         consensus.nPowTargetTimespan = 14 * 24 * 60 * 60;
         consensus.nPowTargetSpacing = 10 * 60;
@@ -135,7 +136,7 @@ public:
         // BitcoinCard: Anchor params for new chain (genesis block)
         consensus.asertAnchorParams = Consensus::Params::ASERTAnchor{
             0,            // anchor block height (genesis)
-            0x1e00ffff,   // anchor block nBits (256x easier than difficulty 1)
+            0x1f00ffff,   // anchor block nBits (65536x easier than difficulty 1)
             0,            // anchor block previous block timestamp
         };
 
@@ -166,12 +167,13 @@ public:
         m_assumed_chain_state_size = 1;     // New chain starts small
 
         // BitcoinCard genesis block - timestamp: Dec 27, 2025
-        // Mined with nonce=548158, nBits=0x1e00ffff (256x easier than difficulty 1)
-        genesis = CreateGenesisBlock(1735315200, 548158, 0x1e00ffff, 1,
+        // Mined with nonce=47485, nBits=0x1f00ffff (65536x easier than difficulty 1)
+        // This allows CPU mining to find blocks in seconds
+        genesis = CreateGenesisBlock(1735315200, 47485, 0x1f00ffff, 1,
                                      50 * COIN);
         consensus.hashGenesisBlock = genesis.GetHash();
         assert(consensus.hashGenesisBlock ==
-               uint256S("0x000000ffab1f5e1a4449198369b7a927929f836e79c981141c7506a975c7fbcf"));
+               uint256S("0x0000c4fbcf1cf6e8515b52feed12a3ffd1b00354d329db5856953e34a9e8e54a"));
         assert(genesis.hashMerkleRoot ==
                uint256S("0xb2025da4eb73530a5ad6290ee74f89834850bcb6cf4bc674566801568745acae"));
 
@@ -329,10 +331,10 @@ public:
 
         // BitcoinCard testnet3 genesis block - same as mainnet
         genesis =
-            CreateGenesisBlock(1735315200, 548158, 0x1e00ffff, 1, 50 * COIN);
+            CreateGenesisBlock(1735315200, 47485, 0x1f00ffff, 1, 50 * COIN);
         consensus.hashGenesisBlock = genesis.GetHash();
         assert(consensus.hashGenesisBlock ==
-               uint256S("0x000000ffab1f5e1a4449198369b7a927929f836e79c981141c7506a975c7fbcf"));
+               uint256S("0x0000c4fbcf1cf6e8515b52feed12a3ffd1b00354d329db5856953e34a9e8e54a"));
         assert(genesis.hashMerkleRoot ==
                uint256S("0xb2025da4eb73530a5ad6290ee74f89834850bcb6cf4bc674566801568745acae"));
 
@@ -541,10 +543,10 @@ public:
         m_assumed_chain_state_size = 1;     // 12M
 
         // BitcoinCard testnet4 genesis block - same as mainnet
-        genesis = CreateGenesisBlock(1735315200, 548158, 0x1e00ffff, 1, 50 * COIN);
+        genesis = CreateGenesisBlock(1735315200, 47485, 0x1f00ffff, 1, 50 * COIN);
         consensus.hashGenesisBlock = genesis.GetHash();
         assert(consensus.hashGenesisBlock ==
-               uint256S("0x000000ffab1f5e1a4449198369b7a927929f836e79c981141c7506a975c7fbcf"));
+               uint256S("0x0000c4fbcf1cf6e8515b52feed12a3ffd1b00354d329db5856953e34a9e8e54a"));
         assert(genesis.hashMerkleRoot ==
                uint256S("0xb2025da4eb73530a5ad6290ee74f89834850bcb6cf4bc674566801568745acae"));
 
@@ -724,10 +726,10 @@ public:
         m_assumed_chain_state_size = 50;    // 16G
 
         // BitcoinCard scalenet genesis block - same as mainnet
-        genesis = CreateGenesisBlock(1735315200, 548158, 0x1e00ffff, 1, 50 * COIN);
+        genesis = CreateGenesisBlock(1735315200, 47485, 0x1f00ffff, 1, 50 * COIN);
         consensus.hashGenesisBlock = genesis.GetHash();
         assert(consensus.hashGenesisBlock ==
-               uint256S("0x000000ffab1f5e1a4449198369b7a927929f836e79c981141c7506a975c7fbcf"));
+               uint256S("0x0000c4fbcf1cf6e8515b52feed12a3ffd1b00354d329db5856953e34a9e8e54a"));
         assert(genesis.hashMerkleRoot ==
                uint256S("0xb2025da4eb73530a5ad6290ee74f89834850bcb6cf4bc674566801568745acae"));
 
@@ -886,10 +888,10 @@ public:
         m_assumed_chain_state_size = 1;     // 15M
 
         // BitcoinCard chipnet genesis block - same as mainnet
-        genesis = CreateGenesisBlock(1735315200, 548158, 0x1e00ffff, 1, 50 * COIN);
+        genesis = CreateGenesisBlock(1735315200, 47485, 0x1f00ffff, 1, 50 * COIN);
         consensus.hashGenesisBlock = genesis.GetHash();
         assert(consensus.hashGenesisBlock ==
-               uint256S("0x000000ffab1f5e1a4449198369b7a927929f836e79c981141c7506a975c7fbcf"));
+               uint256S("0x0000c4fbcf1cf6e8515b52feed12a3ffd1b00354d329db5856953e34a9e8e54a"));
         assert(genesis.hashMerkleRoot ==
                uint256S("0xb2025da4eb73530a5ad6290ee74f89834850bcb6cf4bc674566801568745acae"));
 
