@@ -451,7 +451,8 @@ static UniValue getblocktemplatecommon(bool fLight, const Config &config, const 
         }
     }
 
-    if (IsInitialBlockDownload()) {
+    // Skip IBD check if allowunconnectedmining is enabled (for new chains)
+    if (!config.GetAllowUnconnectedMining() && IsInitialBlockDownload()) {
         throw JSONRPCError(RPC_CLIENT_IN_INITIAL_DOWNLOAD,
                            "Bitcoin is downloading blocks...");
     }
