@@ -1,6 +1,6 @@
-# BitcoinCard Seed Node - AWS Lightsail Setup Guide
+# TeraETH Seed Node - AWS Lightsail Setup Guide
 
-This guide explains how to set up a BitcoinCard seed node on AWS Lightsail for $3.50/month.
+This guide explains how to set up a TeraETH seed node on AWS Lightsail for $3.50/month.
 
 ## Prerequisites
 
@@ -16,7 +16,7 @@ This guide explains how to set up a BitcoinCard seed node on AWS Lightsail for $
    - **Platform**: Linux/Unix
    - **Blueprint**: OS Only → **Ubuntu 22.04 LTS**
    - **Instance plan**: $3.50/month (512 MB RAM, 1 vCPU, 20 GB SSD)
-   - **Instance name**: `bitcoincard-seed-1`
+   - **Instance name**: `teraeth-seed-1`
 
 4. Expand **Add launch script** and paste the contents of `lightsail-userdata.sh`
 
@@ -50,22 +50,22 @@ This guide explains how to set up a BitcoinCard seed node on AWS Lightsail for $
 
 2. Check node status:
    ```bash
-   sudo systemctl status bitcoincard
+   sudo systemctl status teraeth
    ```
 
 3. Check blockchain info:
    ```bash
-   sudo -u bitcoincard bitcoincard-cli -datadir=/home/bitcoincard/.bitcoincard getblockchaininfo
+   sudo -u teraeth teraeth-cli -datadir=/home/teraeth/.teraeth getblockchaininfo
    ```
 
 4. Check network connections:
    ```bash
-   sudo -u bitcoincard bitcoincard-cli -datadir=/home/bitcoincard/.bitcoincard getnetworkinfo
+   sudo -u teraeth teraeth-cli -datadir=/home/teraeth/.teraeth getnetworkinfo
    ```
 
 ## Step 5: Report Your IP
 
-Once your node is running, report your static IP address so it can be added to the seed node list in the BitcoinCard source code.
+Once your node is running, report your static IP address so it can be added to the seed node list in the TeraETH source code.
 
 Your seed node IP: `YOUR_STATIC_IP:9333`
 
@@ -73,17 +73,17 @@ Your seed node IP: `YOUR_STATIC_IP:9333`
 
 ### View Logs
 ```bash
-sudo journalctl -u bitcoincard -f
+sudo journalctl -u teraeth -f
 ```
 
 ### Restart Node
 ```bash
-sudo systemctl restart bitcoincard
+sudo systemctl restart teraeth
 ```
 
 ### Stop Node
 ```bash
-sudo systemctl stop bitcoincard
+sudo systemctl stop teraeth
 ```
 
 ## Cost Breakdown
@@ -100,7 +100,7 @@ sudo systemctl stop bitcoincard
 ### Node won't start
 ```bash
 # Check logs
-sudo journalctl -u bitcoincard -n 100
+sudo journalctl -u teraeth -n 100
 
 # Check if port is in use
 sudo netstat -tlnp | grep 9333
@@ -109,9 +109,9 @@ sudo netstat -tlnp | grep 9333
 ### Build failed
 ```bash
 # Re-run build manually
-cd /home/bitcoincard/bitcoincard-node/build
-sudo -u bitcoincard cmake -GNinja .. -DBUILD_BITCOIN_QT=OFF -DBUILD_BITCOIN_WALLET=ON
-sudo -u bitcoincard ninja -j1 bitcoind bitcoin-cli
+cd /home/teraeth/teraeth-node/build
+sudo -u teraeth cmake -GNinja .. -DBUILD_BITCOIN_QT=OFF -DBUILD_BITCOIN_WALLET=ON
+sudo -u teraeth ninja -j1 bitcoind bitcoin-cli
 ```
 
 ### Out of memory during build
@@ -127,6 +127,6 @@ Use `-j1` instead of `-j$(nproc)` to reduce memory usage during compilation.
 ## Next Steps
 
 After your seed node is running:
-1. Share your static IP with the BitcoinCard team
+1. Share your static IP with the TeraETH team
 2. The IP will be added to `src/chainparams.cpp` as a fixed seed
 3. New nodes will automatically connect to your seed node

@@ -1,0 +1,22 @@
+[Unit]
+Description=TeraETH EVM RPC Proxy
+After=network.target teraeth.service
+Requires=teraeth.service
+
+[Service]
+Type=simple
+User=teraeth
+Group=teraeth
+WorkingDirectory=/opt/teraeth/evm-rpc-proxy
+ExecStart=/usr/bin/python3 /opt/teraeth/evm-rpc-proxy/evm_rpc_proxy.py --node-host 127.0.0.1 --node-port 9332 --node-user teraeth --node-password REPLACE_WITH_RPC_PASSWORD
+Restart=on-failure
+RestartSec=10
+TimeoutStopSec=30
+
+# Security
+PrivateTmp=true
+ProtectSystem=full
+NoNewPrivileges=true
+
+[Install]
+WantedBy=multi-user.target

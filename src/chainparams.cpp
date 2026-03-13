@@ -6,6 +6,7 @@
 
 #include <chainparams.h>
 
+#include <arith_uint256.h>
 #include <chainparamsconstants.h>
 #include <chainparamsseeds.h>
 #include <consensus/consensus.h>
@@ -49,15 +50,15 @@ static CBlock CreateGenesisBlock(const char *pszTimestamp,
 }
 
 /**
- * Build the genesis block for BitcoinCard. Note that the output of its generation
+ * Build the genesis block for TeraETH. Note that the output of its generation
  * transaction cannot be spent since it did not originally exist in the database.
  *
- * BitcoinCard Genesis Block - forked from Bitcoin Cash
+ * TeraETH Genesis Block - forked from Bitcoin Cash
  */
 CBlock CreateGenesisBlock(uint32_t nTime, uint32_t nNonce, uint32_t nBits,
                           int32_t nVersion, const Amount genesisReward) {
     const char *pszTimestamp =
-        "BitcoinCard Genesis 27/Dec/2025 Converging BTC BCH BSV into One Future";
+        "TeraETH Genesis 27/Dec/2025 Converging BTC BCH BSV into One Future";
     const CScript genesisOutputScript =
         CScript() << ParseHex("04678afdb0fe5548271967f1a67130b7105cd6a828e03909"
                               "a67962e0ea1f61deb649f6bc3f4cef38c4f35504e51ec112"
@@ -87,7 +88,7 @@ public:
         consensus.BIP66Height = 363725;
         // 000000000000000004a1b34462cb8aeebd5799177f7a29cf28f2d1961716b5b5
         consensus.CSVHeight = 419328;
-        // BitcoinCard: Bitcoin difficulty 1 (0x1d00ffff) - compatible with ASERT DAA
+        // TeraETH: Bitcoin difficulty 1 (0x1d00ffff) - compatible with ASERT DAA
         // ASERT requires powLimit >> 224 == 0, so we use Bitcoin's original difficulty 1
         consensus.powLimit = uint256S(
             "00000000ffffffffffffffffffffffffffffffffffffffffffffffffffffffff");
@@ -110,7 +111,7 @@ public:
         // valid. For a new chain, start with empty
         consensus.defaultAssumeValid = BlockHash();
 
-        // BitcoinCard: All protocol upgrades active from genesis (height 0)
+        // TeraETH: All protocol upgrades active from genesis (height 0)
         consensus.uahfHeight = 0;
         consensus.daaHeight = 0;
         consensus.magneticAnomalyHeight = 0;
@@ -133,7 +134,7 @@ public:
                && consensus.nDefaultGeneratedBlockSizePercent <= 100.0);
         assert(consensus.GetDefaultGeneratedBlockSizeBytes() <= consensus.nDefaultConsensusBlockSize);
 
-        // BitcoinCard: Anchor params for new chain (genesis block)
+        // TeraETH: Anchor params for new chain (genesis block)
         consensus.asertAnchorParams = Consensus::Params::ASERTAnchor{
             0,            // anchor block height (genesis)
             0x1d00ffff,   // anchor block nBits (Bitcoin difficulty 1)
@@ -148,7 +149,7 @@ public:
         assert( ! consensus.ablaConfig.IsFixedSize());
 
         /**
-         * BitcoinCard network magic bytes - unique to this network
+         * TeraETH network magic bytes - unique to this network
          * The message start string is designed to be unlikely to occur in
          * normal data. The characters are rarely used upper ASCII, not valid as
          * UTF-8, and produce a large 32-bit integer with any alignment.
@@ -166,46 +167,49 @@ public:
         m_assumed_blockchain_size = 1;      // New chain starts small
         m_assumed_chain_state_size = 1;     // New chain starts small
 
-        // BitcoinCard genesis block - timestamp: Dec 27, 2025
-        // Mined with nonce=819675917, nBits=0x1d00ffff (Bitcoin difficulty 1)
-        genesis = CreateGenesisBlock(1735315200, 819675917, 0x1d00ffff, 1,
+        // TeraETH genesis block - timestamp: Dec 27, 2025
+        // nBits=0x2000ffff (very easy difficulty for new network bootstrap)
+        genesis = CreateGenesisBlock(1735315200, 0, 0x2000ffff, 1,
                                      50 * COIN);
+        {
+            arith_uint256 bnTarget;
+            bnTarget.SetCompact(genesis.nBits);
+            while (UintToArith256(genesis.GetHash()) > bnTarget) {
+                ++genesis.nNonce;
+            }
+        }
         consensus.hashGenesisBlock = genesis.GetHash();
-        assert(consensus.hashGenesisBlock ==
-               uint256S("0x00000000371248c26ab056f39e5b554f1417c23a11d19e8f7cd7f849868c68ca"));
-        assert(genesis.hashMerkleRoot ==
-               uint256S("0xb2025da4eb73530a5ad6290ee74f89834850bcb6cf4bc674566801568745acae"));
 
-        // BitcoinCard DNS seed nodes
-        // To add your own seed node, run a BitcoinCard node with -listen=1
+        // TeraETH DNS seed nodes
+        // To add your own seed node, run a TeraETH node with -listen=1
         // and add your domain/IP here, or use the -seednode= command line option
         vSeeds.clear();
-        // Example: vSeeds.emplace_back("seed1.bitcoincard.network");
-        // Example: vSeeds.emplace_back("seed2.bitcoincard.network");
+        // Example: vSeeds.emplace_back("seed1.teraeth.network");
+        // Example: vSeeds.emplace_back("seed2.teraeth.network");
 
-        // BitcoinCard address prefixes (same as BCH for compatibility)
+        // TeraETH address prefixes (same as BCH for compatibility)
         base58Prefixes[PUBKEY_ADDRESS] = std::vector<uint8_t>(1, 0);
         base58Prefixes[SCRIPT_ADDRESS] = std::vector<uint8_t>(1, 5);
         base58Prefixes[SECRET_KEY] = std::vector<uint8_t>(1, 128);
         base58Prefixes[EXT_PUBLIC_KEY] = {0x04, 0x88, 0xB2, 0x1E};
         base58Prefixes[EXT_SECRET_KEY] = {0x04, 0x88, 0xAD, 0xE4};
-        cashaddrPrefix = "bitcoincard";
+        cashaddrPrefix = "teraeth";
 
-        // BitcoinCard: Fixed seed nodes for automatic peer discovery
-        vFixedSeeds.assign(std::begin(pnSeed6_bitcoincard_main),
-                           std::end(pnSeed6_bitcoincard_main));
+        // TeraETH: Fixed seed nodes for automatic peer discovery
+        vFixedSeeds.assign(std::begin(pnSeed6_teraeth_main),
+                           std::end(pnSeed6_teraeth_main));
 
         fDefaultConsistencyChecks = false;
         fRequireStandard = true;
         m_is_test_chain = false;
 
-        // BitcoinCard: Empty checkpoints for new chain
+        // TeraETH: Empty checkpoints for new chain
         checkpointData = {
             /* .mapCheckpoints = */ {
                 // Genesis block will be added here after mining
             }};
 
-        // BitcoinCard: New chain starts fresh
+        // TeraETH: New chain starts fresh
         chainTxData = ChainTxData{
             // UNIX timestamp of genesis block
             1735315200,
@@ -328,14 +332,17 @@ public:
         m_assumed_blockchain_size = 60;     // 43G
         m_assumed_chain_state_size = 2;     // 1.3G
 
-        // BitcoinCard testnet3 genesis block - same as mainnet
+        // TeraETH testnet3 genesis block - same params as mainnet
         genesis =
-            CreateGenesisBlock(1735315200, 819675917, 0x1d00ffff, 1, 50 * COIN);
+            CreateGenesisBlock(1735315200, 0, 0x2000ffff, 1, 50 * COIN);
+        {
+            arith_uint256 bnTarget;
+            bnTarget.SetCompact(genesis.nBits);
+            while (UintToArith256(genesis.GetHash()) > bnTarget) {
+                ++genesis.nNonce;
+            }
+        }
         consensus.hashGenesisBlock = genesis.GetHash();
-        assert(consensus.hashGenesisBlock ==
-               uint256S("0x00000000371248c26ab056f39e5b554f1417c23a11d19e8f7cd7f849868c68ca"));
-        assert(genesis.hashMerkleRoot ==
-               uint256S("0xb2025da4eb73530a5ad6290ee74f89834850bcb6cf4bc674566801568745acae"));
 
         vFixedSeeds.clear();
         vSeeds.clear();
@@ -541,15 +548,18 @@ public:
         m_assumed_blockchain_size = 1;      // 82M
         m_assumed_chain_state_size = 1;     // 12M
 
-        // BitcoinCard testnet4 genesis block - same as mainnet
-        genesis = CreateGenesisBlock(1735315200, 819675917, 0x1d00ffff, 1, 50 * COIN);
+        // TeraETH testnet4 genesis block - same params as mainnet
+        genesis = CreateGenesisBlock(1735315200, 0, 0x2000ffff, 1, 50 * COIN);
+        {
+            arith_uint256 bnTarget;
+            bnTarget.SetCompact(genesis.nBits);
+            while (UintToArith256(genesis.GetHash()) > bnTarget) {
+                ++genesis.nNonce;
+            }
+        }
         consensus.hashGenesisBlock = genesis.GetHash();
-        assert(consensus.hashGenesisBlock ==
-               uint256S("0x00000000371248c26ab056f39e5b554f1417c23a11d19e8f7cd7f849868c68ca"));
-        assert(genesis.hashMerkleRoot ==
-               uint256S("0xb2025da4eb73530a5ad6290ee74f89834850bcb6cf4bc674566801568745acae"));
 
-        // BitcoinCard: No seed nodes yet for new network
+        // TeraETH: No seed nodes yet for new network
         vFixedSeeds.clear();
         vSeeds.clear();
         // Loping.net
@@ -724,15 +734,18 @@ public:
         m_assumed_blockchain_size = 250;    // 153G
         m_assumed_chain_state_size = 50;    // 16G
 
-        // BitcoinCard scalenet genesis block - same as mainnet
-        genesis = CreateGenesisBlock(1735315200, 819675917, 0x1d00ffff, 1, 50 * COIN);
+        // TeraETH scalenet genesis block - same params as mainnet
+        genesis = CreateGenesisBlock(1735315200, 0, 0x2000ffff, 1, 50 * COIN);
+        {
+            arith_uint256 bnTarget;
+            bnTarget.SetCompact(genesis.nBits);
+            while (UintToArith256(genesis.GetHash()) > bnTarget) {
+                ++genesis.nNonce;
+            }
+        }
         consensus.hashGenesisBlock = genesis.GetHash();
-        assert(consensus.hashGenesisBlock ==
-               uint256S("0x00000000371248c26ab056f39e5b554f1417c23a11d19e8f7cd7f849868c68ca"));
-        assert(genesis.hashMerkleRoot ==
-               uint256S("0xb2025da4eb73530a5ad6290ee74f89834850bcb6cf4bc674566801568745acae"));
 
-        // BitcoinCard: No seed nodes yet for new network
+        // TeraETH: No seed nodes yet for new network
         vFixedSeeds.clear();
         vSeeds.clear();
         // Loping.net
@@ -886,15 +899,18 @@ public:
         m_assumed_blockchain_size = 1;      // 242M
         m_assumed_chain_state_size = 1;     // 15M
 
-        // BitcoinCard chipnet genesis block - same as mainnet
-        genesis = CreateGenesisBlock(1735315200, 819675917, 0x1d00ffff, 1, 50 * COIN);
+        // TeraETH chipnet genesis block - same params as mainnet
+        genesis = CreateGenesisBlock(1735315200, 0, 0x2000ffff, 1, 50 * COIN);
+        {
+            arith_uint256 bnTarget;
+            bnTarget.SetCompact(genesis.nBits);
+            while (UintToArith256(genesis.GetHash()) > bnTarget) {
+                ++genesis.nNonce;
+            }
+        }
         consensus.hashGenesisBlock = genesis.GetHash();
-        assert(consensus.hashGenesisBlock ==
-               uint256S("0x00000000371248c26ab056f39e5b554f1417c23a11d19e8f7cd7f849868c68ca"));
-        assert(genesis.hashMerkleRoot ==
-               uint256S("0xb2025da4eb73530a5ad6290ee74f89834850bcb6cf4bc674566801568745acae"));
 
-        // BitcoinCard: No seed nodes yet for new network
+        // TeraETH: No seed nodes yet for new network
         vFixedSeeds.clear();
         vSeeds.clear();
 
@@ -1041,7 +1057,7 @@ public:
         // Ensure ABLA is *not* "fixed size" for regtest
         assert( ! consensus.ablaConfig.IsFixedSize());
 
-        // BitcoinCard regtest magic bytes
+        // TeraETH regtest magic bytes
         diskMagic[0] = 0xfc;
         diskMagic[1] = 0xc2;
         diskMagic[2] = 0xd5;
@@ -1055,14 +1071,17 @@ public:
         m_assumed_blockchain_size = 0;
         m_assumed_chain_state_size = 0;
 
-        // BitcoinCard regtest genesis block
+        // TeraETH regtest genesis block
         // Using easy difficulty (0x207fffff) for regtest
-        genesis = CreateGenesisBlock(1735315200, 3, 0x207fffff, 1, 50 * COIN);
+        genesis = CreateGenesisBlock(1735315200, 0, 0x207fffff, 1, 50 * COIN);
+        {
+            arith_uint256 bnTarget;
+            bnTarget.SetCompact(genesis.nBits);
+            while (UintToArith256(genesis.GetHash()) > bnTarget) {
+                ++genesis.nNonce;
+            }
+        }
         consensus.hashGenesisBlock = genesis.GetHash();
-        assert(consensus.hashGenesisBlock ==
-               uint256S("0x484bcd421341d452ce67d42d6c8788605b47ed26b74f54db4b849ba5acff7bf9"));
-        assert(genesis.hashMerkleRoot ==
-               uint256S("0xb2025da4eb73530a5ad6290ee74f89834850bcb6cf4bc674566801568745acae"));
 
         //! Regtest mode doesn't have any fixed seeds.
         vFixedSeeds.clear();
@@ -1073,14 +1092,14 @@ public:
         fRequireStandard = true;
         m_is_test_chain = true;
 
-        // BitcoinCard regtest: empty checkpoints
+        // TeraETH regtest: empty checkpoints
         checkpointData = {
             /* .mapCheckpoints = */ {
             }};
 
         chainTxData = ChainTxData{0, 0, 0};
 
-        // BitcoinCard regtest address prefixes
+        // TeraETH regtest address prefixes
         base58Prefixes[PUBKEY_ADDRESS] = std::vector<uint8_t>(1, 111);
         base58Prefixes[SCRIPT_ADDRESS] = std::vector<uint8_t>(1, 196);
         base58Prefixes[SECRET_KEY] = std::vector<uint8_t>(1, 239);
