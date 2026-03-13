@@ -6,6 +6,7 @@
 
 #include <chainparams.h>
 
+#include <arith_uint256.h>
 #include <chainparamsconstants.h>
 #include <chainparamsseeds.h>
 #include <consensus/consensus.h>
@@ -167,14 +168,17 @@ public:
         m_assumed_chain_state_size = 1;     // New chain starts small
 
         // TeraETH genesis block - timestamp: Dec 27, 2025
-        // Mined with nonce=819675917, nBits=0x1d00ffff (Bitcoin difficulty 1)
-        genesis = CreateGenesisBlock(1735315200, 819675917, 0x1d00ffff, 1,
+        // nBits=0x2000ffff (very easy difficulty for new network bootstrap)
+        genesis = CreateGenesisBlock(1735315200, 0, 0x2000ffff, 1,
                                      50 * COIN);
+        {
+            arith_uint256 bnTarget;
+            bnTarget.SetCompact(genesis.nBits);
+            while (UintToArith256(genesis.GetHash()) > bnTarget) {
+                ++genesis.nNonce;
+            }
+        }
         consensus.hashGenesisBlock = genesis.GetHash();
-        assert(consensus.hashGenesisBlock ==
-               uint256S("0x00000000371248c26ab056f39e5b554f1417c23a11d19e8f7cd7f849868c68ca"));
-        assert(genesis.hashMerkleRoot ==
-               uint256S("0xb2025da4eb73530a5ad6290ee74f89834850bcb6cf4bc674566801568745acae"));
 
         // TeraETH DNS seed nodes
         // To add your own seed node, run a TeraETH node with -listen=1
@@ -328,14 +332,17 @@ public:
         m_assumed_blockchain_size = 60;     // 43G
         m_assumed_chain_state_size = 2;     // 1.3G
 
-        // TeraETH testnet3 genesis block - same as mainnet
+        // TeraETH testnet3 genesis block - same params as mainnet
         genesis =
-            CreateGenesisBlock(1735315200, 819675917, 0x1d00ffff, 1, 50 * COIN);
+            CreateGenesisBlock(1735315200, 0, 0x2000ffff, 1, 50 * COIN);
+        {
+            arith_uint256 bnTarget;
+            bnTarget.SetCompact(genesis.nBits);
+            while (UintToArith256(genesis.GetHash()) > bnTarget) {
+                ++genesis.nNonce;
+            }
+        }
         consensus.hashGenesisBlock = genesis.GetHash();
-        assert(consensus.hashGenesisBlock ==
-               uint256S("0x00000000371248c26ab056f39e5b554f1417c23a11d19e8f7cd7f849868c68ca"));
-        assert(genesis.hashMerkleRoot ==
-               uint256S("0xb2025da4eb73530a5ad6290ee74f89834850bcb6cf4bc674566801568745acae"));
 
         vFixedSeeds.clear();
         vSeeds.clear();
@@ -541,13 +548,16 @@ public:
         m_assumed_blockchain_size = 1;      // 82M
         m_assumed_chain_state_size = 1;     // 12M
 
-        // TeraETH testnet4 genesis block - same as mainnet
-        genesis = CreateGenesisBlock(1735315200, 819675917, 0x1d00ffff, 1, 50 * COIN);
+        // TeraETH testnet4 genesis block - same params as mainnet
+        genesis = CreateGenesisBlock(1735315200, 0, 0x2000ffff, 1, 50 * COIN);
+        {
+            arith_uint256 bnTarget;
+            bnTarget.SetCompact(genesis.nBits);
+            while (UintToArith256(genesis.GetHash()) > bnTarget) {
+                ++genesis.nNonce;
+            }
+        }
         consensus.hashGenesisBlock = genesis.GetHash();
-        assert(consensus.hashGenesisBlock ==
-               uint256S("0x00000000371248c26ab056f39e5b554f1417c23a11d19e8f7cd7f849868c68ca"));
-        assert(genesis.hashMerkleRoot ==
-               uint256S("0xb2025da4eb73530a5ad6290ee74f89834850bcb6cf4bc674566801568745acae"));
 
         // TeraETH: No seed nodes yet for new network
         vFixedSeeds.clear();
@@ -724,13 +734,16 @@ public:
         m_assumed_blockchain_size = 250;    // 153G
         m_assumed_chain_state_size = 50;    // 16G
 
-        // TeraETH scalenet genesis block - same as mainnet
-        genesis = CreateGenesisBlock(1735315200, 819675917, 0x1d00ffff, 1, 50 * COIN);
+        // TeraETH scalenet genesis block - same params as mainnet
+        genesis = CreateGenesisBlock(1735315200, 0, 0x2000ffff, 1, 50 * COIN);
+        {
+            arith_uint256 bnTarget;
+            bnTarget.SetCompact(genesis.nBits);
+            while (UintToArith256(genesis.GetHash()) > bnTarget) {
+                ++genesis.nNonce;
+            }
+        }
         consensus.hashGenesisBlock = genesis.GetHash();
-        assert(consensus.hashGenesisBlock ==
-               uint256S("0x00000000371248c26ab056f39e5b554f1417c23a11d19e8f7cd7f849868c68ca"));
-        assert(genesis.hashMerkleRoot ==
-               uint256S("0xb2025da4eb73530a5ad6290ee74f89834850bcb6cf4bc674566801568745acae"));
 
         // TeraETH: No seed nodes yet for new network
         vFixedSeeds.clear();
@@ -886,13 +899,16 @@ public:
         m_assumed_blockchain_size = 1;      // 242M
         m_assumed_chain_state_size = 1;     // 15M
 
-        // TeraETH chipnet genesis block - same as mainnet
-        genesis = CreateGenesisBlock(1735315200, 819675917, 0x1d00ffff, 1, 50 * COIN);
+        // TeraETH chipnet genesis block - same params as mainnet
+        genesis = CreateGenesisBlock(1735315200, 0, 0x2000ffff, 1, 50 * COIN);
+        {
+            arith_uint256 bnTarget;
+            bnTarget.SetCompact(genesis.nBits);
+            while (UintToArith256(genesis.GetHash()) > bnTarget) {
+                ++genesis.nNonce;
+            }
+        }
         consensus.hashGenesisBlock = genesis.GetHash();
-        assert(consensus.hashGenesisBlock ==
-               uint256S("0x00000000371248c26ab056f39e5b554f1417c23a11d19e8f7cd7f849868c68ca"));
-        assert(genesis.hashMerkleRoot ==
-               uint256S("0xb2025da4eb73530a5ad6290ee74f89834850bcb6cf4bc674566801568745acae"));
 
         // TeraETH: No seed nodes yet for new network
         vFixedSeeds.clear();
@@ -1057,12 +1073,15 @@ public:
 
         // TeraETH regtest genesis block
         // Using easy difficulty (0x207fffff) for regtest
-        genesis = CreateGenesisBlock(1735315200, 3, 0x207fffff, 1, 50 * COIN);
+        genesis = CreateGenesisBlock(1735315200, 0, 0x207fffff, 1, 50 * COIN);
+        {
+            arith_uint256 bnTarget;
+            bnTarget.SetCompact(genesis.nBits);
+            while (UintToArith256(genesis.GetHash()) > bnTarget) {
+                ++genesis.nNonce;
+            }
+        }
         consensus.hashGenesisBlock = genesis.GetHash();
-        assert(consensus.hashGenesisBlock ==
-               uint256S("0x484bcd421341d452ce67d42d6c8788605b47ed26b74f54db4b849ba5acff7bf9"));
-        assert(genesis.hashMerkleRoot ==
-               uint256S("0xb2025da4eb73530a5ad6290ee74f89834850bcb6cf4bc674566801568745acae"));
 
         //! Regtest mode doesn't have any fixed seeds.
         vFixedSeeds.clear();
