@@ -1,173 +1,212 @@
-BitcoinCard Node
-================
+TeraETH Node
+============
 
-BitcoinCard is a new blockchain network forked from Bitcoin Cash Node. It aims to provide
-a converging platform for BTC, BCH, and BSV ecosystems with enhanced scalability and
-NFC card-based wallet integration.
+TeraETH is an Ethereum L2 network built by hard-forking BitcoinCard (Bitcoin Cash Node fork).
+It provides a MetaMask-compatible blockchain with ETH as the native payment token.
 
-What is BitcoinCard?
---------------------
+What is TeraETH?
+----------------
 
-BitcoinCard (BCD) is a digital currency that enables instant payments to anyone,
-anywhere in the world. It uses peer-to-peer technology to operate with no
-central authority: managing transactions and issuing money are carried out
-collectively by the network.
+TeraETH is a Layer 2 Ethereum network (Chain ID: 200011) that combines the proven
+UTXO-based transaction model with an EVM-compatible JSON-RPC interface, enabling
+standard Ethereum wallets like MetaMask to interact with the network.
 
 Key Features:
-- SHA-256 Proof of Work (compatible with Bitcoin mining hardware)
-- 32MB default block size (scalable)
-- ASERT difficulty adjustment algorithm
-- CashAddr format with "bitcoincard:" prefix
+- MetaMask Compatible: Full EVM JSON-RPC proxy on port 8545
+- Native ETH Token: Uses ETH as the native currency (18 decimals)
+- Chain ID 200011: Unique network identifier for wallet configuration
+- SHA-256 Proof of Work: Compatible with Bitcoin mining hardware
+- 32MB Block Size: High throughput capacity
+- ASERT Difficulty Adjustment: Responsive difficulty algorithm
 
 Network Parameters
 ------------------
 
-| Parameter | Mainnet | Testnet | Regtest |
-|-----------|---------|---------|---------|
-| Default Port | 9333 | 19333 | 19444 |
-| RPC Port | 9332 | 19332 | 19443 |
-| Address Prefix | bitcoincard: | bcdtest: | bcdreg: |
-| Magic Bytes | 0xb1d3c2f4 | - | 0xdcd5c2fc |
+| Parameter | Value |
+|-----------|-------|
+| Chain ID | 200011 |
+| Native Token | ETH |
+| Token Decimals | 18 |
+| P2P Port | 9333 |
+| Node RPC Port | 9332 |
+| EVM RPC Port | 8545 |
+| Block Time | ~10 minutes |
+| Block Size | 32MB |
+| Consensus | SHA-256 PoW |
 
-Genesis Block
--------------
+MetaMask Configuration
+----------------------
 
-- Timestamp: December 27, 2025 (1735315200)
-- Message: "BitcoinCard Genesis 27/Dec/2025 Converging BTC BCH BSV into One Future"
-- Hash: `000000ffab1f5e1a4449198369b7a927929f836e79c981141c7506a975c7fbcf`
-- Merkle Root: `b2025da4eb73530a5ad6290ee74f89834850bcb6cf4bc674566801568745acae`
-- Difficulty: 0x1e00ffff (256x easier than Bitcoin's difficulty 1)
+To add TeraETH to MetaMask:
+
+| Setting | Value |
+|---------|-------|
+| Network Name | TeraETH |
+| RPC URL | http://YOUR_NODE_IP:8545 |
+| Chain ID | 200011 |
+| Currency Symbol | ETH |
+| Block Explorer URL | (optional) |
 
 Quick Start
 -----------
 
-### Building from Source
+### 1. Build the TeraETH Node
 
-```bash
-git clone https://github.com/space0org/bitcoincard-node.git
-cd bitcoincard-node
-mkdir build && cd build
-cmake -GNinja .. -DBUILD_BITCOIN_QT=OFF -DBUILD_BITCOIN_WALLET=ON
-ninja bitcoind bitcoin-cli
-```
+    git clone https://github.com/space0org/teraeth-node.git
+    cd teraeth-node
+    mkdir build && cd build
+    cmake -GNinja .. -DBUILD_BITCOIN_QT=OFF -DBUILD_BITCOIN_WALLET=ON
+    ninja bitcoind bitcoin-cli
 
-### Running a Node
+### 2. Configure the Node
 
-Start the BitcoinCard daemon:
+Create ~/.teraeth/teraeth.conf:
 
-```bash
-# Mainnet
-./src/bitcoind -datadir=/path/to/data -daemon
+    # Network
+    listen=1
+    port=9333
+    maxconnections=125
 
-# Regtest (for testing)
-./src/bitcoind -regtest -datadir=/path/to/data -daemon
-```
+    # RPC (required for EVM proxy)
+    server=1
+    rpcuser=teraeth
+    rpcpassword=YOUR_SECURE_PASSWORD
+    rpcport=9332
+    rpcallowip=127.0.0.1
+    rpcbind=127.0.0.1
 
-### Basic Commands
+### 3. Start the Node
 
-```bash
-# Get blockchain info
-./src/bitcoin-cli -datadir=/path/to/data getblockchaininfo
+    # Mainnet
+    ./src/bitcoind -datadir=~/.teraeth -daemon
 
-# Get network info
-./src/bitcoin-cli -datadir=/path/to/data getnetworkinfo
+    # Regtest (for testing)
+    ./src/bitcoind -regtest -datadir=~/.teraeth -daemon
 
-# Stop the node
-./src/bitcoin-cli -datadir=/path/to/data stop
-```
+### 4. Start the EVM RPC Proxy
+
+    cd evm-rpc-proxy
+    pip3 install -r requirements.txt
+    python3 evm_rpc_proxy.py \
+        --node-host 127.0.0.1 \
+        --node-port 9332 \
+        --node-user teraeth \
+        --node-password YOUR_SECURE_PASSWORD
+
+The EVM RPC proxy will listen on port 8545 and translate MetaMask requests
+to TeraETH node RPC calls.
+
+### 5. Connect MetaMask
+
+1. Open MetaMask
+2. Click "Add Network"
+3. Enter the TeraETH configuration (see table above)
+4. Your RPC URL should point to your node's IP on port 8545
+
+Architecture
+------------
+
+    MetaMask / EVM Wallets
+            |
+            | (JSON-RPC over HTTP, port 8545)
+            v
+    +-------------------+
+    | EVM RPC Proxy     |  Python/aiohttp
+    | (evm-rpc-proxy/)  |  Translates eth_* calls
+    +-------------------+
+            |
+            | (Bitcoin JSON-RPC, port 9332)
+            v
+    +-------------------+
+    | TeraETH Node      |  C++ (forked from BCHN)
+    | (src/bitcoind)    |  UTXO-based blockchain
+    +-------------------+
+            |
+            | (P2P protocol, port 9333)
+            v
+       TeraETH Network
+
+EVM RPC Methods Supported
+-------------------------
+
+The EVM RPC proxy supports the following Ethereum JSON-RPC methods:
+
+Core:
+- eth_chainId - Returns 200011 (0x30D4B)
+- eth_blockNumber - Current block height
+- eth_syncing - Sync status
+- eth_gasPrice - Gas price (fixed at 1 Gwei)
+- eth_estimateGas - Gas estimation
+
+Blocks:
+- eth_getBlockByNumber
+- eth_getBlockByHash
+- eth_getBlockTransactionCountByHash
+- eth_getBlockTransactionCountByNumber
+
+Transactions:
+- eth_getTransactionByHash
+- eth_getTransactionReceipt
+- eth_sendRawTransaction
+- eth_getTransactionByBlockHashAndIndex
+- eth_getTransactionByBlockNumberAndIndex
+
+Account:
+- eth_getBalance
+- eth_getTransactionCount
+- eth_getCode
+- eth_getStorageAt
+- eth_accounts
+
+Filters:
+- eth_newFilter
+- eth_newBlockFilter
+- eth_newPendingTransactionFilter
+- eth_getFilterChanges
+- eth_uninstallFilter
+- eth_getLogs
+
+Fees:
+- eth_feeHistory
+- eth_maxPriorityFeePerGas
+
+Network:
+- net_version
+- net_listening
+- net_peerCount
+- web3_clientVersion
+- web3_sha3
+
+Docker Deployment
+-----------------
+
+    # Build EVM RPC proxy
+    cd evm-rpc-proxy
+    docker build -t teraeth-evm-proxy .
+
+    # Run the EVM proxy
+    docker run -d --name teraeth-evm-proxy \
+        -p 8545:8545 \
+        teraeth-evm-proxy \
+        --node-host YOUR_NODE_HOST --node-port 9332 \
+        --node-user teraeth --node-password YOUR_PASSWORD
 
 Seed Node Setup
 ---------------
 
-BitcoinCard uses DNS seeds and fixed seed nodes for peer discovery. As a new network,
-you can help by running a seed node.
+    ./src/bitcoind -datadir=~/.teraeth -addnode=IP_ADDRESS:9333
 
-### Option 1: Connect to Known Nodes (Command Line)
+Or add to teraeth.conf:
 
-If you know the IP address of another BitcoinCard node, connect directly:
-
-```bash
-./src/bitcoind -datadir=/path/to/data -addnode=IP_ADDRESS:9333
-```
-
-Or add to your configuration file (`bitcoincard.conf`):
-
-```
-addnode=IP_ADDRESS:9333
-addnode=ANOTHER_IP:9333
-```
-
-### Option 2: Run a Seed Node
-
-To run a seed node that others can connect to:
-
-1. Ensure your node is publicly accessible on port 9333
-2. Run with listen enabled:
-
-```bash
-./src/bitcoind -datadir=/path/to/data -listen=1 -port=9333
-```
-
-3. Share your IP address or domain with other network participants
-
-### Option 3: DNS Seed Setup
-
-For production networks, DNS seeds provide automatic peer discovery.
-
-1. Set up a DNS server that responds to seed queries
-2. Configure A records pointing to known BitcoinCard nodes
-3. Add your DNS seed to `src/chainparams.cpp`:
-
-```cpp
-vSeeds.emplace_back("seed.yourdomain.com");
-```
-
-### Configuration File
-
-Create `~/.bitcoincard/bitcoincard.conf` (Linux/Mac) or 
-`%APPDATA%\BitcoinCard\bitcoincard.conf` (Windows):
-
-```ini
-# Network settings
-listen=1
-port=9333
-rpcport=9332
-
-# Seed nodes (add known nodes here)
-addnode=node1.example.com:9333
-addnode=node2.example.com:9333
-
-# RPC settings (for local access)
-rpcuser=yourusername
-rpcpassword=yourpassword
-rpcallowip=127.0.0.1
-
-# Optional: Enable mining
-# gen=1
-
-# Optional: Prune old blocks to save disk space
-# prune=10000
-```
+    addnode=IP_ADDRESS:9333
 
 Mining
 ------
 
-BitcoinCard uses SHA-256 Proof of Work, compatible with Bitcoin ASIC miners.
+TeraETH uses SHA-256 Proof of Work, compatible with Bitcoin ASIC miners.
 
-### Solo Mining (Regtest)
-
-```bash
-# Generate blocks in regtest mode
-./src/bitcoin-cli -regtest -datadir=/path/to/data generatetoaddress 1 YOUR_ADDRESS
-```
-
-### Pool Mining
-
-Use `getblocktemplate` RPC for pool integration:
-
-```bash
-./src/bitcoin-cli -datadir=/path/to/data getblocktemplate '{"rules": ["segwit"]}'
-```
+    # Solo mining in regtest mode
+    ./src/bitcoin-cli -regtest -datadir=~/.teraeth generatetoaddress 1 YOUR_ADDRESS
 
 System Requirements
 -------------------
@@ -175,41 +214,34 @@ System Requirements
 Minimum:
 - CPU: 2 cores
 - RAM: 2GB
-- Disk: 10GB (pruned mode) / 500GB+ (full node, as chain grows)
-- Network: Stable internet connection
+- Disk: 10GB (pruned) / 500GB+ (full node)
+- Network: Stable internet
+- Python 3.8+ (for EVM RPC proxy)
 
 Recommended:
 - CPU: 4+ cores
 - RAM: 4GB+
-- Disk: SSD with 1TB+
+- Disk: SSD 1TB+
 - Network: 100Mbps+
 
 License
 -------
 
-BitcoinCard Node is released under the terms of the MIT license. See
-[COPYING](COPYING) for more information or see
-[https://opensource.org/licenses/MIT](https://opensource.org/licenses/MIT).
+TeraETH Node is released under the terms of the MIT license. See
+COPYING for more information or see https://opensource.org/licenses/MIT.
 
-This software is based on Bitcoin Cash Node, which includes software developed
-by the OpenSSL Project for use in the [OpenSSL Toolkit](https://www.openssl.org/),
-cryptographic software written by [Eric Young](mailto:eay@cryptsoft.com), and
-UPnP software written by Thomas Bernard.
+Based on Bitcoin Cash Node, which includes software developed by the OpenSSL Project,
+cryptographic software by Eric Young, and UPnP software by Thomas Bernard.
 
 Development
 -----------
 
-BitcoinCard development takes place at:
-- GitHub: [https://github.com/space0org/bitcoincard-node](https://github.com/space0org/bitcoincard-node)
+TeraETH development takes place at:
+- GitHub: https://github.com/space0org/teraeth-node
+- Domain: cyberdiver.jp
 
 Disclosure Policy
 -----------------
 
-We have a [Disclosure Policy](DISCLOSURE_POLICY.md) for responsible disclosure
+We have a Disclosure Policy (DISCLOSURE_POLICY.md) for responsible disclosure
 of security issues.
-
-Further Info
-------------
-
-See [doc/README.md](doc/README.md) for further info on installation, building,
-development and more.

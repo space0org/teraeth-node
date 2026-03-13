@@ -1,13 +1,13 @@
 #pragma once
 /**
- * List of fixed seed nodes for the BitcoinCard network
+ * List of fixed seed nodes for the TeraETH network
  *
  * Each string must be numeric IPv4 dot-notation or numeric
  * IPv6 hex notation, followed by a colon and a port.
  */
 
-// BitcoinCard mainnet seed nodes (port 9333)
-static const SeedSpec6 pnSeed6_bitcoincard_main[] = {
+// TeraETH mainnet seed nodes (port 9333)
+static const SeedSpec6 pnSeed6_teraeth_main[] = {
     { "13.159.98.194:9333" },  // AWS Lightsail Tokyo - seed1
 };
 

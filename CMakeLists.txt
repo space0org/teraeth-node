@@ -8,19 +8,19 @@ set(CMAKE_USER_MAKE_RULES_OVERRIDE
 	"${CMAKE_SOURCE_DIR}/cmake/modules/OverrideInitFlags.cmake"
 )
 
-project(bitcoincard
+project(teraeth
 	VERSION 1.0.0
-	DESCRIPTION "BitcoinCard is a full node implementation of the BitcoinCard protocol, forked from Bitcoin Cash."
-	HOMEPAGE_URL "https://github.com/i4RP/BitcoinCardNetwork"
+	DESCRIPTION "TeraETH is an Ethereum L2 network node with native ETH token, MetaMask compatible (Chain ID: 200011)."
+	HOMEPAGE_URL "https://github.com/space0org/teraeth-node"
 )
 
 # Package information
-set(PACKAGE_NAME "BitcoinCard")
+set(PACKAGE_NAME "TeraETH")
 
 # Copyright
 set(COPYRIGHT_YEAR 2025)
 set(COPYRIGHT_HOLDERS "The %s developers")
-set(COPYRIGHT_HOLDERS_SUBSTITUTION BitcoinCard)
+set(COPYRIGHT_HOLDERS_SUBSTITUTION TeraETH)
 string(REPLACE "%s" ${COPYRIGHT_HOLDERS_SUBSTITUTION} COPYRIGHT_HOLDERS_FINAL ${COPYRIGHT_HOLDERS})
 
 # Add path for custom modules
@@ -36,7 +36,7 @@ if(NOT CMAKE_BUILD_TYPE)
 	set(__NO_USER_CMAKE_BUILD_TYPE ON CACHE BOOL "True if the user didn't set a build type on the command line")
 endif()
 
-set(BITCOIN_QT_OSX_BUNDLE_NAME "BitcoinCard-Qt")
+set(BITCOIN_QT_OSX_BUNDLE_NAME "TeraETH-Qt")
 
 # Find the python interpreter. This is required for several targets.
 find_package(Python 3.6 COMPONENTS Interpreter REQUIRED)

@@ -43,7 +43,7 @@ const CBaseChainParams &BaseParams() {
 }
 
 /**
- * BitcoinCard port numbers - different from BCH to avoid conflicts
+ * TeraETH port numbers - different from BCH to avoid conflicts
  * Port numbers for incoming Tor connections have been chosen arbitrarily to keep
  * ranges of used ports tight.
  */

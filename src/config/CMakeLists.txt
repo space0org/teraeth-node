@@ -9,9 +9,9 @@ include(CheckCXXSourceCompiles)
 include(CheckCXXCompilerFlag)
 
 # Version
-set(CLIENT_VERSION_MAJOR ${bitcoincard_VERSION_MAJOR})
-set(CLIENT_VERSION_MINOR ${bitcoincard_VERSION_MINOR})
-set(CLIENT_VERSION_REVISION ${bitcoincard_VERSION_PATCH})
+set(CLIENT_VERSION_MAJOR ${teraeth_VERSION_MAJOR})
+set(CLIENT_VERSION_MINOR ${teraeth_VERSION_MINOR})
+set(CLIENT_VERSION_REVISION ${teraeth_VERSION_PATCH})
 
 option(CLIENT_VERSION_IS_RELEASE "Build a release version" OFF)
 
